@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import kotlinx.android.synthetic.main.dialog_brush_size.view.*
+import android.widget.Toast
 import kotlin.math.roundToInt
 
 class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
@@ -34,13 +34,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
         mDrawPaint!!.strokeJoin = Paint.Join.ROUND
         mDrawPaint!!.strokeCap = Paint.Cap.ROUND
         mCanvasPaint = Paint(Paint.DITHER_FLAG)
-        setBrushSizeByPercentage(50)
-    }
-
-    fun setBrushSizeByPercentage(percentage: Int){
-        mBrushSize = ((maxBrushSize - minBrushSize) * percentage) / 100
-        tv_brush_size.text = mBrushSize.toString()
-        sb_brush_size.progress = percentage
+        setSizeForBrush(defaultBrushSizePercentage)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -109,11 +103,9 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
         return true
     }
 
-    fun setSizeForBrush(newSize: Float){
+    fun setSizeForBrush(percentage: Int){
+        val newSize = (percentage / 100f) * (maxBrushSize - minBrushSize)
         mBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, newSize, resources.displayMetrics)
-        val accuratePercentage = (mBrushSize / (maxBrushSize - minBrushSize)) * 100
-        val roundedPercentage = accuratePercentage.roundToInt()
-        setBrushSizeByPercentage(roundedPercentage)
         mDrawPaint!!.strokeWidth = mBrushSize
     }
 
