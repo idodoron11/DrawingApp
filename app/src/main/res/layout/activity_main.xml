@@ -12,21 +12,39 @@
         android:layout_height="0dp"
         android:layout_margin="5dp"
         android:background="@drawable/background_drawing_view_layout"
-        app:layout_constraintBottom_toTopOf="@+id/ib_brush_size"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/ib_brush_size"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_brush_size_icon"
-        android:contentDescription="Choose Brush Size"
-        android:scaleType="fitXY"
-        android:layout_margin="5dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+    <LinearLayout
+        android:id="@+id/buttonsBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/drawing_view"
+        app:layout_constraintStart_toStartOf="@+id/drawing_view">
+        <ImageButton
+            android:id="@+id/ib_brush_size"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="Choose Brush Size"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_brush_size_icon" />
+
+        <ImageButton
+            android:id="@+id/ib_color_picker"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="Choose Color"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_color_picker_icon" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

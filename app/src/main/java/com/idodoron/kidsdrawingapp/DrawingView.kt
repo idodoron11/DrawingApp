@@ -16,12 +16,17 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
     private var mCanvasPaint: Paint? = null
     var mBrushSize: Float = 0f
         private set
-    private var color = Color.BLACK
     private var canvas: Canvas? = null
     private val mPaths = ArrayList<CustomPath>()
-    private val maxBrushSize = 40.5f
-    private val minBrushSize = 0.5f
+    val maxBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40.5f, resources.displayMetrics)
+    val minBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0.5f, resources.displayMetrics)
     private val defaultBrushSizePercentage = 50
+
+    var color = Color.BLUE
+        set(value) {
+            field = value
+            mDrawPaint!!.color = value
+        }
 
     init{
         setUpDrawing()
@@ -105,8 +110,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
     }
 
     fun setSizeForBrush(percentage: Int){
-        val newSize = (percentage / 100f) * (maxBrushSize - minBrushSize)
-        mBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, newSize, resources.displayMetrics)
+        mBrushSize = (percentage / 100f) * (maxBrushSize - minBrushSize)
         mDrawPaint!!.strokeWidth = mBrushSize
     }
 
