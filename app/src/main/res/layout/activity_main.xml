@@ -6,16 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.idodoron.kidsdrawingapp.DrawingView
-        android:id="@+id/drawing_view"
+    <FrameLayout
+        android:id="@+id/fl_drawing_view_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="5dp"
+        android:padding="1dp"
         android:background="@drawable/background_drawing_view_layout"
         app:layout_constraintBottom_toTopOf="@+id/buttonsBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/background_drawing_view_layout"
+            android:scaleType="centerCrop" />
+
+        <com.idodoron.kidsdrawingapp.DrawingView
+            android:id="@+id/drawing_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"/>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/buttonsBar"
@@ -24,8 +39,20 @@
         android:orientation="horizontal"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/drawing_view"
-        app:layout_constraintStart_toStartOf="@+id/drawing_view">
+        app:layout_constraintEnd_toEndOf="@+id/fl_drawing_view_container"
+        app:layout_constraintStart_toStartOf="@+id/fl_drawing_view_container">
+
+        <ImageButton
+            android:id="@+id/ib_undo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="Undo last change"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:src="@drawable/ic_undo_icon" />
+
         <ImageButton
             android:id="@+id/ib_brush_size"
             android:layout_width="50dp"
@@ -34,6 +61,7 @@
             android:layout_marginBottom="4dp"
             android:contentDescription="Choose Brush Size"
             android:scaleType="fitXY"
+            android:background="@null"
             android:src="@drawable/ic_brush_size_icon" />
 
         <ImageButton
@@ -44,7 +72,30 @@
             android:layout_marginBottom="4dp"
             android:contentDescription="Choose Color"
             android:scaleType="fitXY"
+            android:background="@null"
             android:src="@drawable/ic_color_picker_icon" />
+
+        <ImageButton
+            android:id="@+id/ib_import_background"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="Import a background from gallery"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:src="@drawable/ic_gallery_icon" />
+
+        <ImageButton
+            android:id="@+id/ib_redo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="Redo last change"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:src="@drawable/ic_redo_icon" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

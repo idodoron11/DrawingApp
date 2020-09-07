@@ -7,6 +7,8 @@ import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
@@ -18,6 +20,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
         private set
     private var canvas: Canvas? = null
     private val mPaths = ArrayList<CustomPath>()
+    private val actionsStack = Stack<CustomPath>()
     val maxBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40.5f, resources.displayMetrics)
     val minBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0.5f, resources.displayMetrics)
     private val defaultBrushSizePercentage = 50
@@ -87,6 +90,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
 
                 mDrawPath!!.reset()
                 mDrawPath!!.moveTo(touchX!!, touchY!!)
+                actionsStack.removeAll(actionsStack)
             }
 
             // What should happen after a user has moved her/his finger over the canvas
@@ -114,7 +118,23 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
         mDrawPaint!!.strokeWidth = mBrushSize
     }
 
-    internal inner class CustomPath(var color: Int, var brushThickness: Float): Path() {
-
+    fun undoLastChange(){
+        if(mPaths.isNotEmpty()) {
+            val lastChange: CustomPath = mPaths.removeAt(mPaths.size-1)
+            actionsStack.push(lastChange)
+            invalidate()
+        }
     }
+
+    fun redoLastChange(){
+        if(!actionsStack.isEmpty()){
+            val lastChange: CustomPath = actionsStack.pop()
+            mPaths.add(lastChange)
+            invalidate()
+        }
+    }
+
+    internal inner class CustomPath(var color: Int, var brushThickness: Float): Path()
+
+    private inner class ExecuteASyncTask()
 }
