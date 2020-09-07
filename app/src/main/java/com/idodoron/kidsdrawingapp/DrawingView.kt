@@ -23,7 +23,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs){
     private val actionsStack = Stack<CustomPath>()
     val maxBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40.5f, resources.displayMetrics)
     val minBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0.5f, resources.displayMetrics)
-    private val defaultBrushSizePercentage = 50
+    private val defaultBrushSizePercentage = 10
 
     var color = Color.BLUE
         set(value) {

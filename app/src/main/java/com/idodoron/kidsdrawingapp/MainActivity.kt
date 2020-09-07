@@ -5,7 +5,11 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.media.MediaScannerConnection
+import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
@@ -19,6 +23,9 @@ import com.flask.colorpicker.OnColorChangedListener
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_brush_size.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.math.roundToInt
 
 
@@ -50,6 +57,14 @@ class MainActivity : AppCompatActivity() {
 
         ib_redo.setOnClickListener {
             drawing_view.redoLastChange()
+        }
+
+        ib_save.setOnClickListener {
+            if(isPermissionAllowed(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                BitmapAsyncTask(getBitmapFromView(fl_drawing_view_container)).execute()
+            } else {
+                requestStoragePermission()
+            }
         }
     }
 
@@ -160,6 +175,97 @@ class MainActivity : AppCompatActivity() {
 
     private fun isPermissionAllowed(perm: String): Boolean{
         return ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun getBitmapFromView(view: View): Bitmap {
+        val returnedBitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(returnedBitmap)
+        val bgDrawable = view.background
+        if (bgDrawable != null) {
+            bgDrawable.draw(canvas)
+        } else {
+            canvas.drawColor(Color.WHITE)
+        }
+        view.draw(canvas)
+        return returnedBitmap
+    }
+
+    private inner class BitmapAsyncTask(val mBitmap: Bitmap):
+        AsyncTask<Any, Void, String>(){
+
+        private lateinit var mProgressDialog: Dialog
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            showProgressDialog()
+        }
+
+        override fun doInBackground(vararg params: Any?): String {
+            var result = ""
+            if(mBitmap != null){
+                try{
+                    val bytes = ByteArrayOutputStream()
+                    mBitmap.compress(Bitmap.CompressFormat.PNG, 90, bytes)
+                    val filepath: String = (externalMediaDirs[0].absoluteFile.toString()
+                            + File.separator
+                            + "KidDrawingApp_"
+                            + System.currentTimeMillis() / 1000
+                            + ".png")
+                    val f = File(filepath)
+                    val fos = FileOutputStream(f)
+                    fos.write(bytes.toByteArray())
+                    fos.close()
+                    result = f.absolutePath
+                } catch(e: java.lang.Exception){
+                    e.printStackTrace()
+                    result =  ""
+                }
+            }
+            return result
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            cancelProgressDialog()
+            if(result!!.isNotEmpty()){
+                Toast.makeText(this@MainActivity,
+                    "File saved in:\n$result",
+                    Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                Toast.makeText(this@MainActivity,
+                    "File save error.",
+                    Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            MediaScannerConnection.scanFile(
+                this@MainActivity, arrayOf(result), null
+            ) { path, uri ->
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    type = "image/png"
+                }
+                startActivity(
+                    Intent.createChooser(
+                        shareIntent,
+                        "Share image to..."
+                    )
+                )
+            }
+        }
+
+        private fun showProgressDialog(){
+            mProgressDialog = Dialog(this@MainActivity)
+            mProgressDialog.setContentView(R.layout.dialog_please_wait)
+            mProgressDialog.show()
+        }
+
+        private fun cancelProgressDialog(){
+            mProgressDialog.dismiss()
+        }
+
     }
 
     companion object{

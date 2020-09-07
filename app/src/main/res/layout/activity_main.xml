@@ -87,6 +87,17 @@
             android:src="@drawable/ic_gallery_icon" />
 
         <ImageButton
+            android:id="@+id/ib_save"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="Save this work"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:src="@drawable/ic_save_icon" />
+
+        <ImageButton
             android:id="@+id/ib_redo"
             android:layout_width="50dp"
             android:layout_height="50dp"
